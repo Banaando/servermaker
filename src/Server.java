@@ -10,18 +10,18 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class Server {
-    String downloadURL;
-    String version;
-    String type;
-    URL versionManifestURL;
-    JSONObject versionManifestJSON;
-    String latest;
-    String latestSnapshot;
-    JSONArray versions;
-    JSONObject config;
-    JSONObject versionJSON;
-    URL versionURL;
-    JSONObject versionJSON2;
+    private String downloadURL;
+    private String version;
+    private String type;
+    private URL versionManifestURL;
+    private JSONObject versionManifestJSON;
+    private String latest;
+    private String latestSnapshot;
+    private JSONArray versions;
+    private JSONObject config;
+    private JSONObject versionJSON;
+    private URL versionURL;
+    private JSONObject versionJSON2;
 
     public Server() throws IOException {
         versionManifestURL = new URL("https://piston-meta.mojang.com/mc/game/version_manifest_v2.json");
