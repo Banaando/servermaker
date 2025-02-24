@@ -2,12 +2,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -30,8 +26,9 @@ public class Server {
     public Server() throws IOException {
         versionManifestURL = new URL("https://piston-meta.mojang.com/mc/game/version_manifest_v2.json");
         versionManifestJSON = getJson(versionManifestURL);
+        assert versionManifestJSON != null;
         versions = versionManifestJSON.getJSONArray("versions");
-        String configContent = new String(Files.readAllBytes(Paths.get("/Users/eric/IdeaProjects/servermaker/ServerMakerConfig.json")));
+        String configContent = new String(Files.readAllBytes(Paths.get("/Users/eric/IdeaProjects/servermaker/src/ServerMakerConfig.json")));
         config = new JSONObject(configContent);
         type = config.getString("server-type");
         version = config.getString("server-version");
@@ -53,12 +50,13 @@ public class Server {
         }
 
         versionJSON2 = getJson(versionURL);
+        assert versionJSON2 != null;
         downloadURL = versionJSON2.getJSONObject("downloads").getJSONObject("server").getString("url");
 
     }
 
     public void downloadJar() throws IOException {
-        FileUtils.copyURLToFile(new URL(downloadURL), new File(version + ".json"));
+        FileUtils.copyURLToFile(new URL(downloadURL), new File(version + ".jar"));
     }
 
     public static JSONObject getJson(URL url) {
