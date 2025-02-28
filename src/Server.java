@@ -60,7 +60,7 @@ public class Server {
     }
 
     private void getServerConfig() throws IOException {
-        String serverConfigContent = new String(Files.readAllBytes(Paths.get("/Users/eric/IdeaProjects/servermaker/src/ServerMakerConfig.json")));
+        String serverConfigContent = new String(Files.readAllBytes(Paths.get(System.getProperty("user.dir") + File.separator + "src" + File.separator + "ServerMakerConfig.json")));
         serverConfigFile = new JSONObject(serverConfigContent);
         agreedToEula = serverConfigFile.getBoolean("agreed-to-eula");
         serverType = serverConfigFile.getString("server-type");
