@@ -1,4 +1,10 @@
 {
+  "agreed-to-eula": true,
   "server-type": "vanilla",
-  "server-version": "latest"
+  "server-version": "latest",
+  "java-version": 21,
+  "memory": "4G",
+  "port": 25565,
+  "motd": "A Minecraft Server",
+  "java-flags": ""
 }
