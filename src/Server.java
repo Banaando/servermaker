@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class Server {
@@ -16,11 +18,12 @@ public class Server {
     private boolean agreedToEula;
     private String serverType;
     private String serverVersion;
-    private int javaVersion;
+    private String javaPath;
     private String serverMemory;
     private int serverPort;
     private String serverMOTD;
     private String javaFlags;
+    private String serverOS;
     private JSONObject serverConfigFile;
 
     // Retrieved by getServerJSONURL
@@ -35,7 +38,12 @@ public class Server {
 
     public void downloadJar() throws IOException {
         System.out.println("Downloading server jar...");
-        FileUtils.copyURLToFile(new URL(serverDownloadURL), new File(serverVersion + ".jar"));
+        if(!Files.exists(FileSystems.getDefault().getPath(serverType + "-" + serverVersion + ".jar"))) {
+            FileUtils.copyURLToFile(new URL(serverDownloadURL), new File(serverType + "-" + serverVersion + ".jar"));
+            System.out.println("Server jar downloaded.");
+        } else {
+            System.out.println("Server jar already found.");
+        }
     }
 
     public static JSONObject getJSONFromURL(URL url) {
@@ -49,14 +57,35 @@ public class Server {
     }
 
     public void generateStartScript() {
-        try {
-            FileWriter linuxStartScript = new FileWriter("start.sh");
-            linuxStartScript.write("you still have laundry on our bed.");
-            linuxStartScript.close();
-
-        } catch (Exception e){
-            e.printStackTrace();
+        if(serverOS.equals("linux") || serverOS.equals("macos") || serverOS.equals("mac")) {
+            try {
+                FileWriter linuxStartScript = new FileWriter("start.sh");
+                if(javaFlags.equals("")) {
+                    linuxStartScript.write("#!/bin/bash\n" + javaPath + " -Xms" + serverMemory + " -Xmx" + serverMemory + " -jar " + serverType + "-" + serverVersion + ".jar nogui");
+                    linuxStartScript.close();
+                } else {
+                    linuxStartScript.write("#!/bin/bash\n" + javaPath + " -Xms" + serverMemory + " -Xmx" + serverMemory + " " + javaFlags + " -jar " + serverType + "-" + serverVersion + ".jar nogui");
+                    linuxStartScript.close();
+                }
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        } else if(serverOS.equals("windows")) {
+            try {
+                FileWriter windowsStartScript = new FileWriter("start.bat");
+                if(javaFlags.equals("")) {
+                    windowsStartScript.write("@echo off\n" + javaPath + " -Xms" + serverMemory + " -Xmx" + serverMemory + " -jar " + serverType + "-" + serverVersion + ".jar nogui");
+                    windowsStartScript.close();
+                } else {
+                    windowsStartScript.write("@echo off\n" + javaPath + " -Xms" + serverMemory + " -Xmx" + serverMemory + " " + javaFlags + " -jar " + serverType + "-" + serverVersion + ".jar nogui");
+                    windowsStartScript.close();
+                }
+            } catch (Exception e){
+                e.printStackTrace();
+            }
         }
+
+
     }
 
     private void getServerConfig() throws IOException {
@@ -65,11 +94,12 @@ public class Server {
         agreedToEula = serverConfigFile.getBoolean("agreed-to-eula");
         serverType = serverConfigFile.getString("server-type");
         serverVersion = getServerVersion(serverType);
-        javaVersion = serverConfigFile.getInt("java-version");
+        javaPath = serverConfigFile.getString("java-path");
         serverMemory = serverConfigFile.getString("memory");
         serverPort = serverConfigFile.getInt("port");
         serverMOTD = serverConfigFile.getString("motd");
         javaFlags = serverConfigFile.getString("java-flags");
+        serverOS = serverConfigFile.getString("server-os");
     }
 
     private String getServerVersion(String serverType) throws MalformedURLException {

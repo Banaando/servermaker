@@ -2,9 +2,10 @@
   "agreed-to-eula": true,
   "server-type": "vanilla",
   "server-version": "latest",
-  "java-version": 21,
+  "java-path": "java",
   "memory": "4G",
   "port": 25565,
   "motd": "A Minecraft Server",
-  "java-flags": ""
+  "java-flags": "",
+  "server-os": "windows"
 }
