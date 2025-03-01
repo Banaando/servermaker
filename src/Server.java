@@ -2,11 +2,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -38,7 +38,7 @@ public class Server {
 
     public void downloadJar() throws IOException {
         System.out.println("Downloading server jar...");
-        if(!Files.exists(FileSystems.getDefault().getPath(serverType + "-" + serverVersion + ".jar"))) {
+        if(!fileExists(serverType + "-" + serverVersion + ".jar", false)) {
             FileUtils.copyURLToFile(new URL(serverDownloadURL), new File(serverType + "-" + serverVersion + ".jar"));
             System.out.println("Server jar downloaded.");
         } else {
@@ -151,6 +151,61 @@ public class Server {
     private String getServerDownloadURL(String serverJSONURL) throws MalformedURLException {
         JSONObject serverJSON = getJSONFromURL(new URL(serverJSONURL));
         return serverJSON.getJSONObject("downloads").getJSONObject("server").getString("url");
+
+    }
+
+    public void generateEula() {
+        try {
+            FileWriter eula = new FileWriter("eula.txt");
+            eula.write("eula=" + agreedToEula);
+            eula.close();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void generateServerProperties() throws IOException {
+        if(fileExists("server.properties", true)) {
+            replaceText("server.properties", "server-port=.*", "server-port=" + serverPort);
+            replaceText("server.properties", "motd=.*", "motd=" + serverMOTD);
+        } else {
+            try {
+                FileWriter eula = new FileWriter("server.properties");
+                eula.write("server-port=" + serverPort + "\n" + "motd=" + serverMOTD);
+                eula.close();
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
+
+    }
+
+    public static void replaceText(String file, String regexExpression, String replacement) throws IOException {
+        Path path = Paths.get(file);
+        Charset charset = StandardCharsets.UTF_8;
+        String content = new String(Files.readAllBytes(path), charset);
+        content = content.replaceAll(regexExpression, replacement);
+        Files.write(path, content.getBytes(charset));
+    }
+
+    public static boolean fileExists(String testFileName, boolean isTextFile) throws IOException {
+        if(Files.exists(FileSystems.getDefault().getPath(testFileName))) {
+            if(!isTextFile) {
+                return true;
+            } else {
+                BufferedReader reader = new BufferedReader(new FileReader(testFileName));
+                int lines = 0;
+                while (reader.readLine() != null) {
+                    lines++;
+                }
+                reader.close();
+                return lines > 0;
+            }
+        } else {
+            return false;
+        }
+
 
     }
 }
