@@ -3,6 +3,7 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.*;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -12,6 +13,8 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 public class Server {
     // Config variables retrieved by getServerConfig
@@ -20,10 +23,9 @@ public class Server {
     private String serverVersion;
     private String javaPath;
     private String serverMemory;
-    private int serverPort;
-    private String serverMOTD;
     private String javaFlags;
     private String serverOS;
+    private JSONObject serverProperties;
     private JSONObject serverConfigFile;
 
     // Retrieved by getServerJSONURL
@@ -80,7 +82,7 @@ public class Server {
                     windowsStartScript.write("@echo off\n" + javaPath + " -Xms" + serverMemory + " -Xmx" + serverMemory + " " + javaFlags + " -jar " + serverType + "-" + serverVersion + ".jar nogui");
                     windowsStartScript.close();
                 }
-            } catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -89,17 +91,22 @@ public class Server {
     }
 
     private void getServerConfig() throws IOException {
-        String serverConfigContent = new String(Files.readAllBytes(Paths.get(System.getProperty("user.dir") + File.separator + "src" + File.separator + "ServerMakerConfig.json")));
+        String serverConfigContent = "";
+        try {
+            serverConfigContent = new String(Files.readAllBytes(Paths.get(System.getProperty("user.dir") + File.separator + "ServerMakerConfig.json")));
+        } catch (Exception e) {
+            System.out.println("Server config not found. Please include a server config in the same folder as this file called ServerMakerConfig.json");
+            System.exit(1);
+        }
         serverConfigFile = new JSONObject(serverConfigContent);
         agreedToEula = serverConfigFile.getBoolean("agreed-to-eula");
         serverType = serverConfigFile.getString("server-type");
         serverVersion = getServerVersion(serverType);
         javaPath = serverConfigFile.getString("java-path");
         serverMemory = serverConfigFile.getString("memory");
-        serverPort = serverConfigFile.getInt("port");
-        serverMOTD = serverConfigFile.getString("motd");
         javaFlags = serverConfigFile.getString("java-flags");
         serverOS = serverConfigFile.getString("server-os");
+        serverProperties = serverConfigFile.getJSONObject("server-properties");
     }
 
     private String getServerVersion(String serverType) throws MalformedURLException {
@@ -165,14 +172,32 @@ public class Server {
     }
 
     public void generateServerProperties() throws IOException {
-        if(fileExists("server.properties", true)) {
-            replaceText("server.properties", "server-port=.*", "server-port=" + serverPort);
-            replaceText("server.properties", "motd=.*", "motd=" + serverMOTD);
-        } else {
+        if(fileExists("server.properties", true)) { // If server.properties already exists, replace properties with the ones in config.
+            HashMap<String, Object> propertiesHashMap = (HashMap<String, Object>) serverProperties.toMap();
+            ArrayList<String> propertyNames = new ArrayList<String>(propertiesHashMap.keySet());
+            ArrayList<Object> propertyValues = new ArrayList<Object>(propertiesHashMap.values());
+            PrintWriter propertyWriter = new PrintWriter(new FileWriter("server.properties", true));
+            for(int i = 0; i < serverProperties.length(); i++) {
+                String regexExpression = propertyNames.get(i) + "=.*";
+                String propertyValue = propertyValues.get(i).toString();
+                if(fileContainsRegex("server.properties", regexExpression)) {
+                    replaceText("server.properties", regexExpression, propertyNames.get(i) + "=" + propertyValue);
+                } else {
+                    propertyWriter.print("\n" + propertyNames.get(i) + "=" + propertyValue);
+                }
+            }
+            propertyWriter.close();
+        } else { // If it doesn't exist, make a new server.properties.
             try {
-                FileWriter eula = new FileWriter("server.properties");
-                eula.write("server-port=" + serverPort + "\n" + "motd=" + serverMOTD);
-                eula.close();
+                FileWriter propertyWriter = new FileWriter("server.properties");
+                HashMap<String, Object> propertiesHashMap = (HashMap<String, Object>) serverProperties.toMap();
+                ArrayList<String> propertyNames = new ArrayList<String>(propertiesHashMap.keySet());
+                ArrayList<Object> propertyValues = new ArrayList<Object>(propertiesHashMap.values());
+                for(int i = 0; i < serverProperties.length(); i++) {
+                    String propertyValue = propertyValues.get(i).toString();
+                    propertyWriter.write(propertyNames.get(i) + "=" + propertyValue + "\n");
+                }
+                propertyWriter.close();
             } catch (Exception e){
                 e.printStackTrace();
             }
@@ -205,7 +230,15 @@ public class Server {
         } else {
             return false;
         }
+    }
 
-
+    public static boolean fileContainsRegex(String filePath, String regex) {
+        Pattern pattern = Pattern.compile(regex);
+        try (Stream<String> lines = Files.lines(Paths.get(filePath))) {
+            return lines.anyMatch(line -> pattern.matcher(line).find());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

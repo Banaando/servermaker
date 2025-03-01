@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="commons-io-2.18.0">
     <CLASSES>
-      <root url="jar://$USER_HOME$/Downloads/commons-io-2.18.0/commons-io-2.18.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../servermakerdependencies/commons-io-2.18.0.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

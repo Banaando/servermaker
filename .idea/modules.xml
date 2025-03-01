@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/servermaker.iml" filepath="$PROJECT_DIR$/servermaker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ServerMaker.iml" filepath="$PROJECT_DIR$/ServerMaker.iml" />
     </modules>
   </component>
 </project>
