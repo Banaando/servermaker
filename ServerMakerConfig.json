@@ -5,7 +5,7 @@
   "java-path": "java",
   "memory": "4G",
   "java-flags": "",
-  "server-os": "windows",
+  "server-os": "macos",
   "server-properties": {
     "server-port": 25560,
     "motd": "A bussy Server",

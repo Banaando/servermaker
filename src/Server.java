@@ -11,6 +11,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.regex.Pattern;
@@ -68,6 +69,10 @@ public class Server {
                 } else {
                     linuxStartScript.write("#!/bin/bash\n" + javaPath + " -Xms" + serverMemory + " -Xmx" + serverMemory + " " + javaFlags + " -jar " + serverType + "-" + serverVersion + ".jar nogui");
                     linuxStartScript.close();
+                }
+                File startSH = new File("start.sh");
+                if(!startSH.setExecutable(true)) {
+                    System.out.println("Unable to make start script executable. Please do this yourself by running chmod +x start.sh in a terminal.");
                 }
             } catch (Exception e){
                 e.printStackTrace();
