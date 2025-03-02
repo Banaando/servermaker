@@ -5,10 +5,10 @@
   "java-path": "java",
   "memory": "4G",
   "java-flags": "",
-  "server-os": "macos",
+  "server-os": "auto",
   "server-properties": {
-    "server-port": 25560,
-    "motd": "A bussy Server",
+    "server-port": 25565,
+    "motd": "A Minecraft Server",
     "enable-command-block": true,
     "allow-flight": true,
     "simulation-distance": 5,

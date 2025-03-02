@@ -111,6 +111,13 @@ public class Server {
         serverMemory = serverConfigFile.getString("memory");
         javaFlags = serverConfigFile.getString("java-flags");
         serverOS = serverConfigFile.getString("server-os");
+        if(serverOS.equals("auto")) {
+            if(System.getProperty("os.name").contains("Window")) {
+                serverOS = "windows";
+            } else {
+                serverOS = "linux";
+            }
+        }
         serverProperties = serverConfigFile.getJSONObject("server-properties");
     }
 
