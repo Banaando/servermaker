@@ -17,37 +17,29 @@ import java.nio.file.Paths;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-public class Server {
+public abstract class Server {
     // Config variables retrieved by getServerConfig
-    private boolean agreedToEula;
-    private String serverType;
-    private String serverVersion;
-    private String javaPath;
-    private String serverMemory;
-    private String javaFlags;
-    private String serverOS;
-    private JSONObject serverProperties;
-    private JSONObject serverConfigFile;
+    protected boolean agreedToEula;
+    protected String serverType;
+    protected String serverVersion;
+    protected String javaPath;
+    protected String serverMemory;
+    protected String javaFlags;
+    protected String serverOS;
+    protected JSONObject serverProperties;
+    protected JSONObject serverConfigFile;
 
     // Retrieved by getServerJSONURL
-    private String serverJSONURL;
-    private String serverDownloadURL;
+    protected String serverJSONURL;
+    protected String serverDownloadURL;
 
-    public Server() throws IOException {
+    public Server(JSONObject serverConfigFile, String serverType) throws IOException {
+        this.serverConfigFile = serverConfigFile;
+        this.serverType = serverType;
         getServerConfig();
-        serverJSONURL = getServerJSONURL(serverType);
-        serverDownloadURL = getServerDownloadURL(serverJSONURL);
     }
 
-    public void downloadJar() throws IOException {
-        System.out.println("Downloading server jar...");
-        if(!fileExists(serverType + "-" + serverVersion + ".jar", false)) {
-            FileUtils.copyURLToFile(new URL(serverDownloadURL), new File(serverType + "-" + serverVersion + ".jar"));
-            System.out.println("Server jar downloaded.");
-        } else {
-            System.out.println("Server jar already found.");
-        }
-    }
+    abstract void downloadJar() throws IOException;
 
     public static JSONObject getJSONFromURL(URL url) {
         try {
@@ -96,16 +88,7 @@ public class Server {
     }
 
     private void getServerConfig() throws IOException {
-        String serverConfigContent = "";
-        try {
-            serverConfigContent = new String(Files.readAllBytes(Paths.get(System.getProperty("user.dir") + File.separator + "ServerMakerConfig.json")));
-        } catch (Exception e) {
-            System.out.println("Server config not found. Please include a server config in the same folder as this file called ServerMakerConfig.json");
-            System.exit(1);
-        }
-        serverConfigFile = new JSONObject(serverConfigContent);
         agreedToEula = serverConfigFile.getBoolean("agreed-to-eula");
-        serverType = serverConfigFile.getString("server-type");
         serverVersion = getServerVersion(serverType);
         javaPath = serverConfigFile.getString("java-path");
         serverMemory = serverConfigFile.getString("memory");
@@ -148,30 +131,9 @@ public class Server {
         return serverConfigFile.getString("server-version");
     }
 
-    private String getServerJSONURL(String serverType) throws MalformedURLException {
-        switch(serverType) {
-            case "vanilla": {
-                URL versionManifestURL = new URL("https://piston-meta.mojang.com/mc/game/version_manifest_v2.json");
-                JSONObject versionManifestJSON = getJSONFromURL(versionManifestURL);
-                JSONArray versionManifestArray = versionManifestJSON.getJSONArray("versions");
-                for(int i = 0; i < versionManifestArray.length(); i++) {
-                    if(versionManifestArray.getJSONObject(i).getString("id").equals(serverVersion)) {
-                        return versionManifestArray.getJSONObject(i).getString("url");
-                    }
-                }
-            }
-            case "paper": {
+    abstract String getServerJSONURL(String serverType) throws MalformedURLException;
 
-            }
-        }
-        return "Server JSON not found";
-    }
-
-    private String getServerDownloadURL(String serverJSONURL) throws MalformedURLException {
-        JSONObject serverJSON = getJSONFromURL(new URL(serverJSONURL));
-        return serverJSON.getJSONObject("downloads").getJSONObject("server").getString("url");
-
-    }
+    abstract String getServerDownloadURL(String serverJSONURL) throws MalformedURLException;
 
     public void generateEula() {
         try {
