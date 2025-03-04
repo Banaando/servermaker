@@ -1,5 +1,0 @@
-{
-    "server-type": "vanilla",
-    "server-version": "latest",
-
-}
