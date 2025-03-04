@@ -32,6 +32,9 @@ public class ServerMaker {
             case "paper": {
                 server = new Paper(serverConfigFile, serverType);
             }
+            case "folia": {
+                server = new Folia(serverConfigFile, serverType);
+            }
         }
     }
 }

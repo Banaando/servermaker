@@ -9,8 +9,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class Paper extends Server{
-    private int paperBuild;
-    private String jarName;
+    protected int paperBuild;
+    protected String jarName;
     public Paper(JSONObject serverConfigFile, String serverType) throws IOException {
         super(serverConfigFile, serverType);
         if(serverVersion.equals("latest")) {
@@ -22,7 +22,7 @@ public class Paper extends Server{
 
     public void downloadJar() throws IOException {
         System.out.println("Downloading server jar...");
-        serverDownloadURL = "https://api.papermc.io/v2/projects/paper/versions/" + serverVersion + "/builds/" + paperBuild + "/downloads/" + jarName;
+        serverDownloadURL = "https://api.papermc.io/v2/projects/" + serverType + "/versions/" + serverVersion + "/builds/" + paperBuild + "/downloads/" + jarName;
         if(!fileExists(jarName, false)) {
             FileUtils.copyURLToFile(new URL(serverDownloadURL), new File(jarName));
             System.out.println("Server jar downloaded.");
@@ -31,9 +31,9 @@ public class Paper extends Server{
         }
     }
 
-    private int getBuild(String serverVersion) throws MalformedURLException {
+    int getBuild(String serverVersion) throws MalformedURLException {
         JSONObject paperBuildsJSON = new JSONObject();
-        paperBuildsJSON = getJSONFromURL(new URL("https://api.papermc.io/v2/projects/paper/versions/" + serverVersion + "/builds"));
+        paperBuildsJSON = getJSONFromURL(new URL("https://api.papermc.io/v2/projects/" + serverType + "/versions/" + serverVersion + "/builds"));
         assert paperBuildsJSON != null;
         JSONArray paperBuildsArray = new JSONArray(paperBuildsJSON.getJSONArray("builds"));
         for(int i = paperBuildsArray.length() - 1; i > 0; i--) {
@@ -45,7 +45,7 @@ public class Paper extends Server{
         try {
             return paperBuildsArray.getJSONObject(paperBuildsArray.length() - 1).getInt("build");
         } catch (Exception e) {
-            System.out.println("Paper build not found for this version. Aborting...");
+            System.out.println("Build not found for this version. Aborting...");
             System.exit(1);
         }
         return -1;
@@ -59,12 +59,12 @@ public class Paper extends Server{
         return "";
     }
 
-    private String getLatestVersion() {
+    String getLatestVersion() {
         JSONObject paperVersionsJSON = new JSONObject();
         try {
-            paperVersionsJSON = getJSONFromURL(new URL("https://api.papermc.io/v2/projects/paper"));
+            paperVersionsJSON = getJSONFromURL(new URL("https://api.papermc.io/v2/projects/" + serverType));
         } catch (MalformedURLException e) {
-            System.out.println("Paper versions JSON not found. Is the PaperMC API down?");
+            System.out.println("Versions JSON not found. Is the PaperMC API down?");
             System.exit(1);
         }
         assert paperVersionsJSON != null;
