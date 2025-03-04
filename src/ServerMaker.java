@@ -30,7 +30,7 @@ public class ServerMaker {
                 server = new Vanilla(serverConfigFile, serverType);
             }
             case "paper": {
-
+                server = new Paper(serverConfigFile, serverType);
             }
         }
     }

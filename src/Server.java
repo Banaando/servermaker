@@ -39,6 +39,10 @@ public abstract class Server {
         getServerConfig();
     }
 
+    public Server() throws IOException {
+        getServerConfig();
+    }
+
     abstract void downloadJar() throws IOException;
 
     public static JSONObject getJSONFromURL(URL url) {
@@ -46,6 +50,7 @@ public abstract class Server {
             String json = IOUtils.toString(url, StandardCharsets.UTF_8);
             return new JSONObject(json);
         } catch (Exception e) {
+            System.out.println("Link to JSON not found. Perhaps the server doesn't have a build available for the version you selected?");
             e.printStackTrace();
             return null;
         }
