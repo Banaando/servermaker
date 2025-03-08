@@ -10,7 +10,6 @@ import java.net.URL;
 
 public class Paper extends Server{
     protected int paperBuild;
-    protected String jarName;
     public Paper(JSONObject serverConfigFile, String serverType) throws IOException {
         super(serverConfigFile, serverType);
         if(serverVersion.equals("latest")) {
@@ -32,7 +31,7 @@ public class Paper extends Server{
     }
 
     int getBuild(String serverVersion) throws MalformedURLException {
-        JSONObject paperBuildsJSON = new JSONObject();
+        JSONObject paperBuildsJSON;
         paperBuildsJSON = getJSONFromURL(new URL("https://api.papermc.io/v2/projects/" + serverType + "/versions/" + serverVersion + "/builds"));
         assert paperBuildsJSON != null;
         JSONArray paperBuildsArray = new JSONArray(paperBuildsJSON.getJSONArray("builds"));
@@ -72,39 +71,4 @@ public class Paper extends Server{
         return paperVersionsList.getString(paperVersionsList.length() - 1);
     }
 
-    public void generateStartScript() {
-        if(serverOS.equals("linux") || serverOS.equals("macos") || serverOS.equals("mac")) {
-            try {
-                FileWriter linuxStartScript = new FileWriter("start.sh");
-                if(javaFlags.equals("")) {
-                    linuxStartScript.write("#!/bin/bash\n" + javaPath + " -Xms" + serverMemory + " -Xmx" + serverMemory + " -jar " + jarName + " nogui");
-                    linuxStartScript.close();
-                } else {
-                    linuxStartScript.write("#!/bin/bash\n" + javaPath + " -Xms" + serverMemory + " -Xmx" + serverMemory + " " + javaFlags + " -jar " + jarName + " nogui");
-                    linuxStartScript.close();
-                }
-                File startSH = new File("start.sh");
-                if(!startSH.setExecutable(true)) {
-                    System.out.println("Unable to make start script executable. Please do this yourself by running chmod +x start.sh in a terminal.");
-                }
-            } catch (Exception e){
-                e.printStackTrace();
-            }
-        } else if(serverOS.equals("windows")) {
-            try {
-                FileWriter windowsStartScript = new FileWriter("start.bat");
-                if(javaFlags.equals("")) {
-                    windowsStartScript.write("@echo off\n" + javaPath + " -Xms" + serverMemory + " -Xmx" + serverMemory + " -jar " + jarName + " nogui");
-                    windowsStartScript.close();
-                } else {
-                    windowsStartScript.write("@echo off\n" + javaPath + " -Xms" + serverMemory + " -Xmx" + serverMemory + " " + javaFlags + " -jar " + jarName + " nogui");
-                    windowsStartScript.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-
-    }
 }

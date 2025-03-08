@@ -15,6 +15,7 @@ public class Vanilla extends Server{
         super(serverConfigFile, serverType);
         serverJSONURL = getServerJSONURL(serverType);
         serverDownloadURL = getServerDownloadURL(serverJSONURL);
+        jarName = serverType + "-" + serverVersion;
     }
 
     protected String getServerJSONURL(String serverType) throws MalformedURLException {

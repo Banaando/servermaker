@@ -6,16 +6,15 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class ServerMaker {
-    private static Server server;
     public static void main(String[] args) throws IOException {
-        makeServer();
+        Server server = makeServer();
         server.downloadJar();
         server.generateStartScript();
         server.generateServerProperties();
         server.generateEula();
     }
 
-    private static void makeServer() throws IOException {
+    private static Server makeServer() throws IOException {
         String serverConfigContent = "";
         try {
             serverConfigContent = new String(Files.readAllBytes(Paths.get(System.getProperty("user.dir") + File.separator + "ServerMakerConfig.json")));
@@ -27,14 +26,21 @@ public class ServerMaker {
         String serverType = serverConfigFile.getString("server-type");
         switch(serverType) {
             case "vanilla": {
-                server = new Vanilla(serverConfigFile, serverType);
+                return new Vanilla(serverConfigFile, serverType);
             }
             case "paper": {
-                server = new Paper(serverConfigFile, serverType);
+                return new Paper(serverConfigFile, serverType);
             }
             case "folia": {
-                server = new Folia(serverConfigFile, serverType);
+                return new Folia(serverConfigFile, serverType);
+            }
+            case "purpur": {
+                return new Purpur(serverConfigFile, serverType);
+            }
+            case "fabric": {
+                return new Fabric(serverConfigFile, serverType);
             }
         }
+        return null;
     }
 }

@@ -14,5 +14,9 @@
     "simulation-distance": 5,
     "spawn-protection": 0,
     "sync-chunk-writes": true
+  },
+  "fabric-config": {
+    "loader-version": "recommended",
+    "installer-version": "latest"
   }
 }

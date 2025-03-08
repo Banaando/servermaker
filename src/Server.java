@@ -3,6 +3,8 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.HttpURLConnection;
+import java.net.URLConnection;
 import java.util.*;
 import java.io.*;
 import java.net.MalformedURLException;
@@ -26,6 +28,7 @@ public abstract class Server {
     protected String serverMemory;
     protected String javaFlags;
     protected String serverOS;
+    protected String jarName;
     protected JSONObject serverProperties;
     protected JSONObject serverConfigFile;
 
@@ -47,8 +50,23 @@ public abstract class Server {
 
     public static JSONObject getJSONFromURL(URL url) {
         try {
-            String json = IOUtils.toString(url, StandardCharsets.UTF_8);
+            HttpURLConnection JSONURLConnection = (HttpURLConnection) url.openConnection();
+            JSONURLConnection.setRequestProperty("User-Agent", "Mozilla/5.0");
+            String json = IOUtils.toString(JSONURLConnection.getInputStream(), StandardCharsets.UTF_8);
             return new JSONObject(json);
+        } catch (Exception e) {
+            System.out.println("Link to JSON not found. Perhaps the server doesn't have a build available for the version you selected?");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static JSONArray getJSONArrayFromURL(URL url) {
+        try {
+            HttpURLConnection JSONURLConnection = (HttpURLConnection) url.openConnection();
+            JSONURLConnection.setRequestProperty("User-Agent", "Mozilla/5.0");
+            String json = IOUtils.toString(JSONURLConnection.getInputStream(), StandardCharsets.UTF_8);
+            return new JSONArray(json);
         } catch (Exception e) {
             System.out.println("Link to JSON not found. Perhaps the server doesn't have a build available for the version you selected?");
             e.printStackTrace();
@@ -60,11 +78,11 @@ public abstract class Server {
         if(serverOS.equals("linux") || serverOS.equals("macos") || serverOS.equals("mac")) {
             try {
                 FileWriter linuxStartScript = new FileWriter("start.sh");
-                if(javaFlags.equals("")) {
-                    linuxStartScript.write("#!/bin/bash\n" + javaPath + " -Xms" + serverMemory + " -Xmx" + serverMemory + " -jar " + serverType + "-" + serverVersion + ".jar nogui");
+                if(javaFlags.isEmpty()) {
+                    linuxStartScript.write("#!/bin/bash\n" + javaPath + " -Xms" + serverMemory + " -Xmx" + serverMemory + " -jar " + jarName + " nogui");
                     linuxStartScript.close();
                 } else {
-                    linuxStartScript.write("#!/bin/bash\n" + javaPath + " -Xms" + serverMemory + " -Xmx" + serverMemory + " " + javaFlags + " -jar " + serverType + "-" + serverVersion + ".jar nogui");
+                    linuxStartScript.write("#!/bin/bash\n" + javaPath + " -Xms" + serverMemory + " -Xmx" + serverMemory + " " + javaFlags + " -jar " + jarName + " nogui");
                     linuxStartScript.close();
                 }
                 File startSH = new File("start.sh");
@@ -77,11 +95,11 @@ public abstract class Server {
         } else if(serverOS.equals("windows")) {
             try {
                 FileWriter windowsStartScript = new FileWriter("start.bat");
-                if(javaFlags.equals("")) {
-                    windowsStartScript.write("@echo off\n" + javaPath + " -Xms" + serverMemory + " -Xmx" + serverMemory + " -jar " + serverType + "-" + serverVersion + ".jar nogui");
+                if(javaFlags.isEmpty()) {
+                    windowsStartScript.write("@echo off\n" + javaPath + " -Xms" + serverMemory + " -Xmx" + serverMemory + " -jar " + jarName + " nogui");
                     windowsStartScript.close();
                 } else {
-                    windowsStartScript.write("@echo off\n" + javaPath + " -Xms" + serverMemory + " -Xmx" + serverMemory + " " + javaFlags + " -jar " + serverType + "-" + serverVersion + ".jar nogui");
+                    windowsStartScript.write("@echo off\n" + javaPath + " -Xms" + serverMemory + " -Xmx" + serverMemory + " " + javaFlags + " -jar " + jarName + " nogui");
                     windowsStartScript.close();
                 }
             } catch (Exception e) {
