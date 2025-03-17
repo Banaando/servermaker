@@ -6,7 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class ServerMaker {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         Server server = makeServer();
         server.downloadJar();
         server.generateStartScript();
@@ -14,7 +14,7 @@ public class ServerMaker {
         server.generateEula();
     }
 
-    private static Server makeServer() throws IOException {
+    private static Server makeServer() throws IOException, InterruptedException {
         String serverConfigContent = "";
         try {
             serverConfigContent = new String(Files.readAllBytes(Paths.get(System.getProperty("user.dir") + File.separator + "ServerMakerConfig.json")));
@@ -39,6 +39,9 @@ public class ServerMaker {
             }
             case "fabric": {
                 return new Fabric(serverConfigFile, serverType);
+            }
+            case "quilt": {
+                return new Quilt(serverConfigFile, serverType);
             }
         }
         return null;

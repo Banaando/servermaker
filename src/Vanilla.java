@@ -37,8 +37,8 @@ public class Vanilla extends Server{
 
     public void downloadJar() throws IOException {
         System.out.println("Downloading server jar...");
-        if(!fileExists(serverType + "-" + serverVersion + ".jar", false)) {
-            FileUtils.copyURLToFile(new URL(serverDownloadURL), new File(serverType + "-" + serverVersion + ".jar"));
+        if(!fileExists(jarName + ".jar", false)) {
+            FileUtils.copyURLToFile(new URL(serverDownloadURL), new File(jarName + ".jar"));
             System.out.println("Server jar downloaded.");
         } else {
             System.out.println("Server jar already found.");

@@ -46,7 +46,7 @@ public abstract class Server {
         getServerConfig();
     }
 
-    abstract void downloadJar() throws IOException;
+    abstract void downloadJar() throws IOException, InterruptedException;
 
     public static JSONObject getJSONFromURL(URL url) {
         try {
@@ -237,5 +237,19 @@ public abstract class Server {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public static void downloadFile(String link, String fileName) throws IOException {
+        URL url = new URL(link);
+        URLConnection connection = url.openConnection();
+
+        // Set a User-Agent header
+        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
+
+        // Copy input stream to file
+        try (InputStream in = connection.getInputStream()) {
+            FileUtils.copyInputStreamToFile(in, new File(fileName));
+        }
+
     }
 }

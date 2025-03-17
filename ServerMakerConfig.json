@@ -1,6 +1,6 @@
 {
   "agreed-to-eula": true,
-  "server-type": "paper",
+  "server-type": "quilt",
   "server-version": "latest",
   "java-path": "java",
   "memory": "4G",
@@ -18,5 +18,8 @@
   "fabric-config": {
     "loader-version": "recommended",
     "installer-version": "latest"
+  },
+  "quilt-config": {
+    "loader-version": "recommended"
   }
 }
