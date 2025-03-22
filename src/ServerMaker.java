@@ -7,11 +7,12 @@ import java.nio.file.Paths;
 
 public class ServerMaker {
     public static void main(String[] args) throws IOException, InterruptedException {
+        System.out.println("Welcome to ServerMaker. Building your server now...");
         Server server = makeServer();
-        server.downloadJar();
-        server.generateStartScript();
-        server.generateServerProperties();
-        server.generateEula();
+//        server.downloadJar();
+//        server.generateStartScript();
+//        server.generateServerProperties();
+//        server.generateEula();
     }
 
     private static Server makeServer() throws IOException, InterruptedException {
@@ -42,6 +43,9 @@ public class ServerMaker {
             }
             case "quilt": {
                 return new Quilt(serverConfigFile, serverType);
+            }
+            case "forge": {
+                return new Forge(serverConfigFile, serverType);
             }
         }
         return null;

@@ -32,6 +32,7 @@ public class Quilt extends Server{
             ProcessBuilder builder = new ProcessBuilder(installerJavaPath, "-jar", "quilt-installer.jar", "listVersions"); // Adjust accordingly
             builder.redirectErrorStream(true); // Merge stdout and stderr
             Process process = builder.start();
+            process.waitFor();
 
             // Read the output
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -158,11 +159,11 @@ public class Quilt extends Server{
             }
         } else {
             if(System.getProperty("os.name").toLowerCase().contains("mac")) { // Run on MacOS with updated Java version
-                installerJavaPath = System.getProperty("java.home" + "/bin/java");
+                installerJavaPath = System.getProperty("java.home") + "/bin/java";
             } else if(System.getProperty("os.name").toLowerCase().contains("window")) { // Run on Windows with updated Java version
-                installerJavaPath = System.getProperty("java.home" + "\\bin\\java");
+                installerJavaPath = System.getProperty("java.home") + "\\bin\\java";
             } else { // Run on Linux with updated Java version
-                installerJavaPath = System.getProperty("java.home" + "/bin/java");
+                installerJavaPath = System.getProperty("java.home") + "/bin/java";
             }
         }
     }
