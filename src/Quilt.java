@@ -69,7 +69,15 @@ public class Quilt extends Server{
         if(Double.parseDouble(System.getProperty("java.specification.version")) < 17) {
             System.out.println("ServerMaker wasn't run using Java 17 or later, but Quilt's installer requires Java 17 or later to run.\nTemporarily downloading Java 17...");
             if(System.getProperty("os.name").toLowerCase().contains("mac")) { // Run on MacOS with Java 8
-                String downloadURLString = String.format("https://api.adoptium.net/v3/binary/latest/17/ga/mac/%s/jre/hotspot/normal/eclipse", System.getProperty("os.arch"));
+                String sysArch = System.getProperty("os.arch");
+                if(sysArch.contains("arm")) {
+                    sysArch = "arm";
+                } else if(sysArch.contains("amd64") || sysArch.contains("x86_64")) {
+                    sysArch = "x64";
+                } else if(sysArch.contains("x86") || sysArch.contains("i386") || sysArch.contains("i486") || sysArch.contains("i586") || sysArch.contains("i686")) {
+                    sysArch = "x86";
+                }
+                String downloadURLString = String.format("https://api.adoptium.net/v3/binary/latest/17/ga/mac/%s/jre/hotspot/normal/eclipse", sysArch);
                 downloadFile(downloadURLString, "./.temp/OpenJDK17.tar.gz");
 
 
@@ -96,7 +104,15 @@ public class Quilt extends Server{
                 runProc.waitFor();
                 installerJavaPath = ".temp/jdk-17/Contents/Home/bin/java";
             } else if(System.getProperty("os.name").toLowerCase().contains("window")) { // Run on Windows with Java 8
-                String downloadURLString = String.format("https://api.adoptium.net/v3/binary/latest/17/ga/windows/%s/jre/hotspot/normal/eclipse", System.getProperty("os.arch"));
+                String sysArch = System.getProperty("os.arch");
+                if(sysArch.contains("arm")) {
+                    sysArch = "arm";
+                } else if(sysArch.contains("amd64") || sysArch.contains("x86_64")) {
+                    sysArch = "x64";
+                } else if(sysArch.contains("x86") || sysArch.contains("i386") || sysArch.contains("i486") || sysArch.contains("i586") || sysArch.contains("i686")) {
+                    sysArch = "x86";
+                }
+                String downloadURLString = String.format("https://api.adoptium.net/v3/binary/latest/17/ga/windows/%s/jre/hotspot/normal/eclipse", sysArch);
                 downloadFile(downloadURLString, ".\\.temp\\OpenJDK17.zip");
 
 
@@ -125,12 +141,20 @@ public class Quilt extends Server{
                 ProcessBuilder proc = new ProcessBuilder();
                 proc.directory(new File(System.getProperty("user.dir") + "\\.temp"));
                 proc.inheritIO();
-                proc.command("ren", oldFolder.getName(), newFolder.getName());
+                proc.command("cmd.exe", "/c", "rename", oldFolder.getName(), newFolder.getName());
                 Process runProc = proc.start();
                 runProc.waitFor();
                 installerJavaPath = ".temp\\jdk-17\\bin\\java";
             } else { // Run on Linux with Java 8
-                String downloadURLString = String.format("https://api.adoptium.net/v3/binary/latest/17/ga/linux/%s/jre/hotspot/normal/eclipse", System.getProperty("os.arch"));
+                String sysArch = System.getProperty("os.arch");
+                if(sysArch.contains("arm")) {
+                    sysArch = "arm";
+                } else if(sysArch.contains("amd64") || sysArch.contains("x86_64")) {
+                    sysArch = "x64";
+                } else if(sysArch.contains("x86") || sysArch.contains("i386") || sysArch.contains("i486") || sysArch.contains("i586") || sysArch.contains("i686")) {
+                    sysArch = "x86";
+                }
+                String downloadURLString = String.format("https://api.adoptium.net/v3/binary/latest/17/ga/linux/%s/jre/hotspot/normal/eclipse", sysArch);
                 downloadFile(downloadURLString, "./.temp/OpenJDK17.tar.gz");
 
 
