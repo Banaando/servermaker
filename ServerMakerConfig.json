@@ -1,7 +1,7 @@
 {
   "agreed-to-eula": true,
-  "server-type": "neoforged",
-  "server-version": "1.20.1",
+  "server-type": "modrinth",
+  "server-version": "latest",
   "java-path": "java",
   "memory": "4G",
   "java-flags": "",
@@ -24,5 +24,9 @@
   },
   "(neo)forge-config": {
     "loader-version": "1.20.1-47.1.100"
+  },
+  "modrinth-config": {
+    "modpack-URL": "https://modrinth.com/modpack/cobblemon-fabric",
+    "modpack-version": "latest-release"
   }
 }

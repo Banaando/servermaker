@@ -47,11 +47,12 @@ public class ServerMaker {
             case "forge": {
                 return new Forge(serverConfigFile, serverType);
             }
-            case "neoforge": {
-                return new NeoForge(serverConfigFile, serverType);
-            }
+            case "neoforge":
             case "neoforged": {
                 return new NeoForge(serverConfigFile, serverType);
+            }
+            case "modrinth": {
+                return new Modrinth(serverConfigFile, serverType);
             }
         }
         return null;
