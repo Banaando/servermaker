@@ -16,9 +16,9 @@ public class Quilt extends Server{
         super(serverConfigFile, serverType);
         downloadInstaller();
         loaderVersion = serverConfigFile.getJSONObject("quilt-config").getString("loader-version");
-        if(loaderVersion.equals("recommended") && serverVersion.equals("latest")) {
+        if((loaderVersion.equals("recommended") || loaderVersion.equals("latest")) && serverVersion.equals("latest")) {
             getLatestVersion(true, true);
-        } else if(loaderVersion.equals("recommended")) {
+        } else if((loaderVersion.equals("recommended") || loaderVersion.equals("latest"))) {
             getLatestVersion(true, false);
         } else if(serverVersion.equals("latest")) {
             getLatestVersion(false, true);

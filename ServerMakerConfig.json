@@ -1,7 +1,7 @@
 {
   "agreed-to-eula": true,
-  "server-type": "forge",
-  "server-version": "1.5.1",
+  "server-type": "neoforged",
+  "server-version": "1.20.1",
   "java-path": "java",
   "memory": "4G",
   "java-flags": "",
@@ -22,7 +22,7 @@
   "quilt-config": {
     "loader-version": "recommended"
   },
-  "forge-config": {
-    "loader-version": "latest"
+  "(neo)forge-config": {
+    "loader-version": "1.20.1-47.1.100"
   }
 }

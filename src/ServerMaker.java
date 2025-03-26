@@ -1,5 +1,4 @@
 import org.json.JSONObject;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -9,10 +8,10 @@ public class ServerMaker {
     public static void main(String[] args) throws IOException, InterruptedException {
         System.out.println("Welcome to ServerMaker. Building your server now...");
         Server server = makeServer();
-//        server.downloadJar();
-//        server.generateStartScript();
-//        server.generateServerProperties();
-//        server.generateEula();
+        server.downloadJar();
+        server.generateStartScript();
+        server.generateServerProperties();
+        server.generateEula();
     }
 
     private static Server makeServer() throws IOException, InterruptedException {
@@ -23,6 +22,7 @@ public class ServerMaker {
             System.out.println("Server config not found. Please include a server config in the same folder as this file called ServerMakerConfig.json");
             System.exit(1);
         }
+        serverConfigContent = serverConfigContent.replaceAll("(?<!\\\\)\\\\(?!\\\\)", "\\\\\\\\");
         JSONObject serverConfigFile = new JSONObject(serverConfigContent);
         String serverType = serverConfigFile.getString("server-type");
         switch(serverType) {
@@ -46,6 +46,12 @@ public class ServerMaker {
             }
             case "forge": {
                 return new Forge(serverConfigFile, serverType);
+            }
+            case "neoforge": {
+                return new NeoForge(serverConfigFile, serverType);
+            }
+            case "neoforged": {
+                return new NeoForge(serverConfigFile, serverType);
             }
         }
         return null;

@@ -24,10 +24,10 @@ public class Fabric extends Server{
         if(serverVersion.equals("latest") || serverVersion.equals("latest-snapshot")) {
             serverVersion = getLatestVersion();
         }
-        if(loaderVersion.equals("recommended")) {
+        if(loaderVersion.equals("recommended") || loaderVersion.equals("latest")) {
             loaderVersion = getRecommendedLoaderVersion();
         }
-        if(installerVersion.equals("latest")) {
+        if(installerVersion.equals("latest") || installerVersion.equals("recommended")) {
             installerVersion = getLatestInstaller();
         }
     }

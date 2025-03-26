@@ -74,8 +74,21 @@ public abstract class Server {
         }
     }
 
-    public void generateStartScript() {
-        if(serverOS.equals("linux") || serverOS.equals("macos") || serverOS.equals("mac")) {
+    public void generateStartScript() throws IOException {
+        if(serverOS.equals("windows")) {
+            try {
+                FileWriter windowsStartScript = new FileWriter("start.bat");
+                if(javaFlags.isEmpty()) {
+                    windowsStartScript.write("@echo off\n" + javaPath + " -Xms" + serverMemory + " -Xmx" + serverMemory + " -jar " + jarName + " nogui");
+                    windowsStartScript.close();
+                } else {
+                    windowsStartScript.write("@echo off\n" + javaPath + " -Xms" + serverMemory + " -Xmx" + serverMemory + " " + javaFlags + " -jar " + jarName + " nogui");
+                    windowsStartScript.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
             try {
                 FileWriter linuxStartScript = new FileWriter("start.sh");
                 if(javaFlags.isEmpty()) {
@@ -89,25 +102,10 @@ public abstract class Server {
                 if(!startSH.setExecutable(true)) {
                     System.out.println("Unable to make start script executable. Please do this yourself by running chmod +x start.sh in a terminal.");
                 }
-            } catch (Exception e){
-                e.printStackTrace();
-            }
-        } else if(serverOS.equals("windows")) {
-            try {
-                FileWriter windowsStartScript = new FileWriter("start.bat");
-                if(javaFlags.isEmpty()) {
-                    windowsStartScript.write("@echo off\n" + javaPath + " -Xms" + serverMemory + " -Xmx" + serverMemory + " -jar " + jarName + " nogui");
-                    windowsStartScript.close();
-                } else {
-                    windowsStartScript.write("@echo off\n" + javaPath + " -Xms" + serverMemory + " -Xmx" + serverMemory + " " + javaFlags + " -jar " + jarName + " nogui");
-                    windowsStartScript.close();
-                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-
-
     }
 
     private void getServerConfig() throws IOException {
