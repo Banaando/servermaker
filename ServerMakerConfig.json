@@ -1,7 +1,7 @@
 {
   "agreed-to-eula": true,
   "server-type": "modrinth",
-  "server-version": "latest",
+  "minecraft-version": "latest",
   "java-path": "java",
   "memory": "4G",
   "java-flags": "",
@@ -16,14 +16,14 @@
     "sync-chunk-writes": true
   },
   "fabric-config": {
-    "loader-version": "recommended",
+    "loader-version": "latest",
     "installer-version": "latest"
   },
   "quilt-config": {
-    "loader-version": "recommended"
+    "loader-version": "latest"
   },
   "(neo)forge-config": {
-    "loader-version": "1.20.1-47.1.100"
+    "loader-version": "latest"
   },
   "modrinth-config": {
     "modpack-URL": "https://modrinth.com/modpack/cobblemon-fabric",

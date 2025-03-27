@@ -126,7 +126,7 @@ public abstract class Server {
     }
 
     private String getServerVersion(String serverType) throws MalformedURLException {
-        if(serverConfigFile.getString("server-version").equals("latest")) {
+        if(serverConfigFile.getString("minecraft-version").equals("latest")) {
             switch(serverType) {
                 case "vanilla": {
                     URL versionManifestURL = new URL("https://piston-meta.mojang.com/mc/game/version_manifest_v2.json");
@@ -137,7 +137,7 @@ public abstract class Server {
 
                 }
             }
-        } else if(serverConfigFile.getString("server-version").equals("latest-snapshot")) {
+        } else if(serverConfigFile.getString("minecraft-version").equals("latest-snapshot")) {
             switch(serverConfigFile.getString("server-type")) {
                 case "vanilla": {
                     URL versionManifestURL = new URL("https://piston-meta.mojang.com/mc/game/version_manifest_v2.json");
@@ -149,7 +149,7 @@ public abstract class Server {
                 }
             }
         }
-        return serverConfigFile.getString("server-version");
+        return serverConfigFile.getString("minecraft-version");
     }
 
     abstract String getServerJSONURL(String serverType) throws MalformedURLException;
