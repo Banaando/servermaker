@@ -12,6 +12,7 @@ public class ServerMaker {
         server.generateStartScript();
         server.generateServerProperties();
         server.generateEula();
+        System.out.println("Server creation completed!");
     }
 
     private static Server makeServer() throws IOException, InterruptedException {
