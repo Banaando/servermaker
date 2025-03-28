@@ -1,6 +1,6 @@
 {
   "agreed-to-eula": true,
-  "server-type": "modrinth",
+  "server-type": "curseforge",
   "minecraft-version": "latest",
   "java-path": "java",
   "memory": "4G",
@@ -27,6 +27,10 @@
   },
   "modrinth-config": {
     "modpack-URL": "https://modrinth.com/modpack/cobblemon-fabric",
+    "modpack-version": "latest-release"
+  },
+  "curseforge-config": {
+    "modpack-URL": "https://www.curseforge.com/minecraft/modpacks/the-pixelmon-modpack",
     "modpack-version": "latest-release"
   }
 }

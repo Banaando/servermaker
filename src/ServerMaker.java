@@ -55,6 +55,9 @@ public class ServerMaker {
             case "modrinth": {
                 return new Modrinth(serverConfigFile, serverType);
             }
+            case "curseforge": {
+                return new Curseforge(serverConfigFile, serverType);
+            }
         }
         return null;
     }
